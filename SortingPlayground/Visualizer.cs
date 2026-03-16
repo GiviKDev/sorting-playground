@@ -26,7 +26,10 @@ static class Visualizer
         Console.ResetColor();
 
         for (int col = 0; col < arr.Length; col++)
+        {
             Console.Write($" {arr[col],1} ");
+        }
+
         Console.WriteLine();
 
         Console.WriteLine();
