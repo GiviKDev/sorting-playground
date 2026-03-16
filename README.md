@@ -1,6 +1,6 @@
 # Sorting Playground
 
-A .NET 10 console app for visualizing and benchmarking sorting algorithms.
+A fun .NET 10 console app to play with sorting algorithms — visualize them step-by-step in the terminal or compare them side by side. Not a serious benchmarking tool, just a playground for learning and experimentation.
 
 ## Requirements
 
@@ -13,7 +13,7 @@ A .NET 10 console app for visualizing and benchmarking sorting algorithms.
 make run
 ```
 
-On startup, select a mode:
+Select a mode on startup:
 
 ```
 Select mode:
@@ -28,76 +28,62 @@ Animates the selected algorithm sorting an array in the terminal.
 ```
 Select algorithm:
   1. BogoSort
-Choice: 1
+  2. BubbleSort
+  3. InsertionSort
+  4. SelectionSort
+Choice: 2
 Array size (n): 6
 Max value: 10
 ```
 
 ### Benchmark
 
-Runs all registered algorithms against the same arrays for every size from 1 to the specified max, and prints a comparison table.
-
-```
-Max array size: 8
-Max value: 100
-
-BogoSort          Steps             Time
-n       BogoSort Steps    Time
-----------------------------------------------
-1       2                 0ms
-2       14               0ms
-...
-```
+Runs all algorithms against the same arrays for every size from 1 to max, and prints a comparison table with step counts and elapsed time.
 
 ## Project Structure
 
 ```
 SortingPlayground/
-├── Algorithms/          # Sorting algorithm implementations
-│   ├── Sorter.cs        # Abstract base class
-│   ├── SortingAlgorithm.cs  # Enum of available algorithms
-│   └── BogoSort.cs
-├── Runners/             # Execution modes
-│   ├── Runner.cs        # Abstract base class
-│   ├── RunMode.cs       # Enum of available modes
+├── Algorithms/
+│   ├── Sorter.cs           # Abstract base class
+│   ├── SortStep.cs         # Step record yielded by algorithms
+│   ├── BogoSort.cs
+│   ├── BubbleSort.cs
+│   ├── InsertionSort.cs
+│   └── SelectionSort.cs
+├── Runners/
+│   ├── Runner.cs           # Abstract base class
+│   ├── RunMode.cs
 │   ├── VisualizerRunner.cs
 │   └── BenchmarkRunner.cs
-├── Program.cs           # Entry point, DI setup
-└── Visualizer.cs        # Terminal rendering (used by VisualizerRunner)
+└── Program.cs              # Entry point, auto-discovers algorithms
 ```
 
 ## Adding a New Algorithm
 
-1. Create `Algorithms/YourSort.cs` implementing `Sorter`:
-   ```csharp
-   namespace SortingPlayground.Algorithms;
+Create a single file in `Algorithms/` — that's it. It will be auto-discovered at startup.
 
-   class YourSort : Sorter
-   {
-       public override SortingAlgorithm Algorithm => SortingAlgorithm.YourSort;
+```csharp
+namespace SortingPlayground.Algorithms;
 
-       public override int Sort(int[] array, Action<int[], int, bool> onStep)
-       {
-           // ...
-       }
-   }
-   ```
+class YourSort : Sorter
+{
+    public override IEnumerable<SortStep> Sort(int[] array)
+    {
+        int steps = 0;
 
-2. Add the value to the enum in `SortingAlgorithm.cs`:
-   ```csharp
-   enum SortingAlgorithm
-   {
-       BogoSort,
-       YourSort,
-   }
-   ```
+        // your sorting logic here...
+        // yield a step whenever you want to report progress:
+        steps++;
+        yield return new SortStep(array, steps, false);
 
-3. Register it in `Program.cs`:
-   ```csharp
-   new ServiceCollection()
-       .AddSingleton<Sorter, BogoSort>()
-       .AddSingleton<Sorter, YourSort>()
-   ```
+        // final step:
+        yield return new SortStep(array, steps, true);
+    }
+}
+```
+
+No other files need to be modified.
 
 That's it — both Visualizer and Benchmark will pick it up automatically.
 
