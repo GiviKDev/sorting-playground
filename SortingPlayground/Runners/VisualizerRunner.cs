@@ -4,7 +4,7 @@ namespace SortingPlayground.Runners;
 
 class VisualizerRunner : Runner
 {
-    private const int FrameDelayMs = 50;
+    private const int FrameDelayMs = 150;
 
     public override void Run(Sorter[] algorithms)
     {
@@ -48,6 +48,9 @@ class VisualizerRunner : Runner
         Console.SetCursorPosition(0, 0);
 
         int max = step.Array.Max();
+        int cellWidth = max.ToString().Length + 2;
+        string block = new('█', cellWidth - 2);
+        string empty = new(' ', cellWidth);
 
         for (int row = max; row >= 1; row--)
         {
@@ -56,11 +59,11 @@ class VisualizerRunner : Runner
                 if (step.Array[col] >= row)
                 {
                     Console.ForegroundColor = step.IsDone ? ConsoleColor.Green : ConsoleColor.Cyan;
-                    Console.Write(" █ ");
+                    Console.Write($" {block} ");
                 }
                 else
                 {
-                    Console.Write("   ");
+                    Console.Write(empty);
                 }
             }
             Console.WriteLine();
@@ -70,7 +73,7 @@ class VisualizerRunner : Runner
 
         for (int col = 0; col < step.Array.Length; col++)
         {
-            Console.Write($" {step.Array[col],1} ");
+            Console.Write($" {step.Array[col].ToString().PadLeft(cellWidth - 2)} ");
         }
 
         Console.WriteLine();
