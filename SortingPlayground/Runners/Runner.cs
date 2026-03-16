@@ -1,3 +1,7 @@
+using SortingPlayground.Algorithms;
+
+namespace SortingPlayground.Runners;
+
 abstract class Runner
 {
     public abstract void Run(Sorter[] algorithms);

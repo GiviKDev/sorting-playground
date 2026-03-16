@@ -1,3 +1,5 @@
+namespace SortingPlayground.Algorithms;
+
 class BogoSort : Sorter
 {
     public override SortingAlgorithm Algorithm => SortingAlgorithm.BogoSort;

@@ -1,3 +1,5 @@
+namespace SortingPlayground.Algorithms;
+
 abstract class Sorter
 {
     public abstract SortingAlgorithm Algorithm { get; }

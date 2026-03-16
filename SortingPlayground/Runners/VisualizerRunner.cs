@@ -1,3 +1,7 @@
+using SortingPlayground.Algorithms;
+
+namespace SortingPlayground.Runners;
+
 class VisualizerRunner : Runner
 {
     private const int FrameDelayMs = 50;

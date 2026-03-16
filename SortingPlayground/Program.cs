@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using SortingPlayground.Algorithms;
+using SortingPlayground.Runners;
 
 ServiceProvider services = new ServiceCollection()
     .AddSingleton<Sorter, BogoSort>()

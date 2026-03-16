@@ -1,3 +1,5 @@
+namespace SortingPlayground.Runners;
+
 enum RunMode
 {
     Visualizer = 1,

@@ -1,4 +1,7 @@
 using System.Diagnostics;
+using SortingPlayground.Algorithms;
+
+namespace SortingPlayground.Runners;
 
 class BenchmarkRunner : Runner
 {
