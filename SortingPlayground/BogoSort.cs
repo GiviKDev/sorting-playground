@@ -1,6 +1,6 @@
-static class BogoSort
+class BogoSort : Sorter
 {
-    public static int Sort(int[] array, Action<int[], int, bool> onShuffle)
+    public override int Sort(int[] array, Action<int[], int, bool> onShuffle)
     {
         Shuffle(array);
         int attempts = 0;
@@ -15,14 +15,6 @@ static class BogoSort
 
         onShuffle(array, attempts, true);
         return attempts;
-    }
-
-    private static bool IsSorted(int[] arr)
-    {
-        for (int i = 1; i < arr.Length; i++)
-            if (arr[i] < arr[i - 1])
-                return false;
-        return true;
     }
 
     private static void Shuffle(int[] arr)
