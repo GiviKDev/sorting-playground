@@ -4,9 +4,6 @@ class BenchmarkRunner : Runner
 {
     public override void Run(Sorter[] algorithms)
     {
-        Console.Write("Min array size: ");
-        int minSize = int.Parse(Console.ReadLine()!);
-
         Console.Write("Max array size: ");
         int maxSize = int.Parse(Console.ReadLine()!);
 
@@ -15,23 +12,29 @@ class BenchmarkRunner : Runner
 
         Console.WriteLine();
 
+        // Header: n | Algorithm1 Steps | Algorithm1 Time | Algorithm2 Steps | ...
+        Console.Write($"  {"n",-6}");
         foreach (Sorter algorithm in algorithms)
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine($"{algorithm.Algorithm}");
-            Console.ResetColor();
+            Console.Write($"  {algorithm.Algorithm + " Steps",-16}  {"Time",-10}");
+        }
+        Console.WriteLine();
+        Console.WriteLine($"  {new string('-', 6 + algorithms.Length * 30)}");
 
-            Console.WriteLine($"  {"n",-6}  {"Max",-6}  {"Steps",-12}  {"Time"}");
-            Console.WriteLine($"  {new string('-', 38)}");
+        for (int size = 1; size <= maxSize; size++)
+        {
+            int[] original = GenerateArray(size, maxValue);
 
-            for (int size = minSize; size <= maxSize; size++)
+            Console.Write($"  {size,-6}");
+
+            foreach (Sorter algorithm in algorithms)
             {
-                int[] array = GenerateArray(size, maxValue);
+                int[] array = [.. original];
                 Stopwatch sw = Stopwatch.StartNew();
                 int steps = algorithm.Sort(array, (_, _, _) => { });
                 sw.Stop();
 
-                Console.WriteLine($"  {size,-6}  {maxValue,-6}  {steps,-12}  {sw.ElapsedMilliseconds}ms");
+                Console.Write($"  {steps,-16}  {sw.ElapsedMilliseconds + "ms",-10}");
             }
 
             Console.WriteLine();

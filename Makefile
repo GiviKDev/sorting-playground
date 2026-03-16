@@ -4,13 +4,13 @@ run:
 	dotnet run --project SortingPlayground
 
 build:
-	dotnet build SortingPlayground
+	dotnet build
 
 clean:
-	dotnet clean SortingPlayground
+	dotnet clean
 	rm -rf SortingPlayground/bin SortingPlayground/obj
 
 rebuild: clean build
 
 format:
-	dotnet format SortingPlayground --severity info
+	dotnet format --severity info
