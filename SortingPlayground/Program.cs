@@ -1,6 +1,12 @@
-using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using SortingPlayground.Algorithms;
 using SortingPlayground.Runners;
+
+Sorter[] algorithms = [.. Assembly.GetExecutingAssembly()
+    .GetTypes()
+    .Where(t => t.IsSubclassOf(typeof(Sorter)) && !t.IsAbstract)
+    .Select(t => (Sorter)Activator.CreateInstance(t)!)
+    .OrderBy(s => s.Name)];
 
 Console.WriteLine("Select mode:");
 foreach (RunMode mode in Enum.GetValues<RunMode>())
@@ -14,12 +20,6 @@ if (!Enum.TryParse(Console.ReadLine()!.Trim(), out RunMode modeChoice) || !Enum.
     Console.WriteLine("Invalid choice.");
     return;
 }
-
-ServiceProvider services = new ServiceCollection()
-    .AddSingleton<Sorter, BogoSort>()
-    .BuildServiceProvider();
-
-Sorter[] algorithms = [.. services.GetServices<Sorter>()];
 
 Runner runner = modeChoice switch
 {

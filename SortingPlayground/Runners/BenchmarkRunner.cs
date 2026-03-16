@@ -19,7 +19,7 @@ class BenchmarkRunner : Runner
         Console.Write($"  {"n",-6}");
         foreach (Sorter algorithm in algorithms)
         {
-            Console.Write($"  {algorithm.Algorithm + " Steps",-16}  {"Time",-10}");
+            Console.Write($"  {algorithm.Name + " Steps",-16}  {"Time",-10}");
         }
         Console.WriteLine();
         Console.WriteLine($"  {new string('-', 6 + algorithms.Length * 30)}");
@@ -34,10 +34,14 @@ class BenchmarkRunner : Runner
             {
                 int[] array = [.. original];
                 Stopwatch sw = Stopwatch.StartNew();
-                int steps = algorithm.Sort(array, (_, _, _) => { });
+                SortStep last = default;
+                foreach (SortStep step in algorithm.Sort(array))
+                {
+                    last = step;
+                }
                 sw.Stop();
 
-                Console.Write($"  {steps,-16}  {sw.ElapsedMilliseconds + "ms",-10}");
+                Console.Write($"  {last.StepCount,-16}  {sw.ElapsedMilliseconds + "ms",-10}");
             }
 
             Console.WriteLine();

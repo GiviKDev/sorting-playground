@@ -2,9 +2,9 @@ namespace SortingPlayground.Algorithms;
 
 abstract class Sorter
 {
-    public abstract SortingAlgorithm Algorithm { get; }
+    public virtual string Name => GetType().Name;
 
-    public abstract int Sort(int[] array, Action<int[], int, bool> onStep);
+    public abstract IEnumerable<SortStep> Sort(int[] array);
 
     protected static bool IsSorted(int[] arr)
     {

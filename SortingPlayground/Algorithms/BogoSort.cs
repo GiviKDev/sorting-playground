@@ -2,23 +2,20 @@ namespace SortingPlayground.Algorithms;
 
 class BogoSort : Sorter
 {
-    public override SortingAlgorithm Algorithm => SortingAlgorithm.BogoSort;
-
-    public override int Sort(int[] array, Action<int[], int, bool> onShuffle)
+    public override IEnumerable<SortStep> Sort(int[] array)
     {
         Shuffle(array);
         int attempts = 0;
-        onShuffle(array, attempts, false);
+        yield return new SortStep(array, attempts, false);
 
         while (!IsSorted(array))
         {
             Shuffle(array);
             attempts++;
-            onShuffle(array, attempts, false);
+            yield return new SortStep(array, attempts, false);
         }
 
-        onShuffle(array, attempts, true);
-        return attempts;
+        yield return new SortStep(array, attempts, true);
     }
 
     private static void Shuffle(int[] arr)
