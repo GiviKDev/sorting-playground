@@ -4,40 +4,26 @@ ServiceProvider services = new ServiceCollection()
     .AddSingleton<Sorter, BogoSort>()
     .BuildServiceProvider();
 
-IEnumerable<Sorter> algorithms = services.GetServices<Sorter>();
-Sorter[] indexed = [.. algorithms];
+Sorter[] algorithms = [.. services.GetServices<Sorter>()];
 
-Console.WriteLine("Select sorting algorithm:");
-for (int i = 0; i < indexed.Length; i++)
+Console.WriteLine("Select mode:");
+foreach (RunMode mode in Enum.GetValues<RunMode>())
 {
-    Console.WriteLine($"  {i + 1}. {indexed[i].Algorithm}");
+    Console.WriteLine($"  {(int)mode}. {mode}");
 }
 Console.Write("Choice: ");
 
-if (!int.TryParse(Console.ReadLine()!.Trim(), out int choice) || choice < 1 || choice > indexed.Length)
+if (!int.TryParse(Console.ReadLine()!.Trim(), out int modeChoice) || !Enum.IsDefined((RunMode)modeChoice))
 {
     Console.WriteLine("Invalid choice.");
     return;
 }
 
-Sorter selected = indexed[choice - 1];
-
-Console.Write("How many numbers? ");
-int n = int.Parse(Console.ReadLine()!);
-
-Console.Write("Delay between frames ms [default: 100]: ");
-string delayInput = Console.ReadLine()!;
-int delay = string.IsNullOrWhiteSpace(delayInput) ? 100 : int.Parse(delayInput);
-
-int[] array = [.. Enumerable.Range(1, n)];
-
-Console.CursorVisible = false;
-Console.Clear();
-
-selected.Sort(array, (arr, attempts, done) =>
+Runner runner = (RunMode)modeChoice switch
 {
-    Visualizer.Render(arr, attempts, done);
-    Thread.Sleep(delay);
-});
+    RunMode.Visualizer => new VisualizerRunner(),
+    RunMode.Benchmark => new BenchmarkRunner(),
+    _ => throw new InvalidOperationException(),
+};
 
-Console.CursorVisible = true;
+runner.Run(algorithms);
