@@ -1,5 +1,7 @@
 class BogoSort : Sorter
 {
+    public override SortingAlgorithm Algorithm => SortingAlgorithm.BogoSort;
+
     public override int Sort(int[] array, Action<int[], int, bool> onShuffle)
     {
         Shuffle(array);

@@ -1,36 +1,43 @@
+using Microsoft.Extensions.DependencyInjection;
+
+ServiceProvider services = new ServiceCollection()
+    .AddSingleton<Sorter, BogoSort>()
+    .BuildServiceProvider();
+
+IEnumerable<Sorter> algorithms = services.GetServices<Sorter>();
+Sorter[] indexed = [.. algorithms];
+
 Console.WriteLine("Select sorting algorithm:");
-Console.WriteLine("  1. BogoSort");
+for (int i = 0; i < indexed.Length; i++)
+{
+    Console.WriteLine($"  {i + 1}. {indexed[i].Algorithm}");
+}
 Console.Write("Choice: ");
 
-switch (Console.ReadLine()!.Trim())
+if (!int.TryParse(Console.ReadLine()!.Trim(), out int choice) || choice < 1 || choice > indexed.Length)
 {
-    case "1":
-        RunBogoSort();
-        break;
-    default:
-        Console.WriteLine("Unknown choice.");
-        break;
+    Console.WriteLine("Invalid choice.");
+    return;
 }
 
-static void RunBogoSort()
+Sorter selected = indexed[choice - 1];
+
+Console.Write("How many numbers? ");
+int n = int.Parse(Console.ReadLine()!);
+
+Console.Write("Delay between frames ms [default: 100]: ");
+string delayInput = Console.ReadLine()!;
+int delay = string.IsNullOrWhiteSpace(delayInput) ? 100 : int.Parse(delayInput);
+
+int[] array = [.. Enumerable.Range(1, n)];
+
+Console.CursorVisible = false;
+Console.Clear();
+
+selected.Sort(array, (arr, attempts, done) =>
 {
-    Console.Write("How many numbers? ");
-    int n = int.Parse(Console.ReadLine()!);
+    Visualizer.Render(arr, attempts, done);
+    Thread.Sleep(delay);
+});
 
-    Console.Write("Delay between frames ms [default: 100]: ");
-    string delayInput = Console.ReadLine()!;
-    int delay = string.IsNullOrWhiteSpace(delayInput) ? 100 : int.Parse(delayInput);
-
-    int[] array = [.. Enumerable.Range(1, n)];
-
-    Console.CursorVisible = false;
-    Console.Clear();
-
-    new BogoSort().Sort(array, (arr, attempts, done) =>
-    {
-        Visualizer.Render(arr, attempts, done);
-        Thread.Sleep(delay);
-    });
-
-    Console.CursorVisible = true;
-}
+Console.CursorVisible = true;

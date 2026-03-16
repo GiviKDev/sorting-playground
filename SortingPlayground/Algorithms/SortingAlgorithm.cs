@@ -1,0 +1,4 @@
+enum SortingAlgorithm
+{
+    BogoSort,
+}
